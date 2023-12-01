@@ -3,5 +3,5 @@ pandas
 plotly
 streamlit 
 matplotlib
-seaborn
 sklearn
+seaborn
