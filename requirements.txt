@@ -1,7 +1,6 @@
-numpy 
-pandas 
-plotly
-streamlit 
-matplotlib
+pandas
+numpy
 sklearn
-seaborn
+streamlit
+matplotlib
+pandas-profiling
