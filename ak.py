@@ -83,7 +83,7 @@ if uploaded_file is not None:
           'Select numerical columns for scaling', data.select_dtypes(include="number").columns
           )
       if numerical_columns:
-        #you can use different scaling method
+        #you can use different scaling method but for now I'm using min-maxscaler
         data[numerical_columns] = (data[numerical_columns]-data[numerical_columns].min())/ (
             data[numerical_columns].max() - data[numerical_columns].min()
           
