@@ -17,7 +17,7 @@ st.set_page_config(page_title="Data Analysis Web App", layout="wide")
 uploaded_file = st.file_uploader("Upload autodata CSV file", type=["csv"])
 
 # Sidebar with options
-st.sidebar.header("OPTIONS AREA")
+st.sidebar.header("RESOURSE")
 show_raw_data = st.sidebar.checkbox("Show Raw Data")
 show_summary_statistics = st.sidebar.checkbox("Show Summary Statistics")
 
@@ -35,7 +35,7 @@ if uploaded_file is not None:
         st.subheader("Summary Statistics")
         st.write(data.describe())
 
-    
+
 
     # Data preprocessing
     if st.checkbox('Clean and preprocess data'):
@@ -83,21 +83,21 @@ if uploaded_file is not None:
           'Select numerical columns for scaling', data.select_dtypes(include="number").columns
           )
       if numerical_columns:
-        #you can use different scaling method but for now I'm using min-maxscaler
+        #you can use different scaling method
         data[numerical_columns] = (data[numerical_columns]-data[numerical_columns].min())/ (
             data[numerical_columns].max() - data[numerical_columns].min()
-          
+
         )
         st.success('Numerical features scaled.')
 
       else:
         st.warning('No numerical columns selected for scaling.')
 
-    
+
     #Display the preprocessed data
     st.subheader('Preprocessed Data')
     st.write(data.head())
-    
+
 
 
     # Explore and visualize data
@@ -105,27 +105,27 @@ if uploaded_file is not None:
     plot_options = ["Seaborn", "Matplotlib", "Plotly"]
     selected_plot = st.selectbox("Select Visualization Tool", plot_options)
 
-   if selected_plot == "Seaborn":
-      st.write("### Seaborn Visualization")
-     #dynamic dropdown for seaborn plot selection
-      seaborn_plot_options= ['Histogram','Boxplot','Countplot']
-      selected_seaborn_plot = st.selectbox('Select Seaborn Plot', seaborn_plot_options)
-    #Seaborn code based on user's selection
-      if selected_seaborn_plot == 'Histogram':
-        st.write('## Histogram')
-        # allow users to choose the column for the histogram
-        hist_column = st.selectbox('Select a column for the histogram', data.columns)
-        sns.histplot(data[hist_column], kde = True)
-        st.pyplot()
-    
-      elif selected_seaborn_plot == 'Boxplot':
-        st.write('## Boxplot')
-        #allow user to choose the x and y axes for the boxplot
-        boxplot_x = st.selectbox('Select the X-axis column', data.columns)
-        boxplot_y = st.selectbox('Select the Y-axis column', data.columns)
-        sns.boxplot(x=boxplot_x, y=boxplot_y, data = data)
-        st.pyplot()
-      elif selected_seaborn_plot == 'Countplot':
+    if selected_plot == "Seaborn":
+        st.write("### Seaborn Visualization")
+        #dynamic dropdown for seaborn plot selection
+        seaborn_plot_options= ['Histogram','Boxplot','Countplot']
+        selected_seaborn_plot = st.selectbox('Select Seaborn Plot', seaborn_plot_options)
+        #Seaborn code based on user's selection
+        if selected_seaborn_plot == 'Histogram':
+          st.write('## Histogram')
+          # allow users to choose the column for the histogram
+          hist_column = st.selectbox('Select a column for the histogram', data.columns)
+          sns.histplot(data[hist_column], kde = True)
+          st.pyplot()
+
+        elif selected_seaborn_plot == 'Boxplot':
+          st.write('## Boxplot')
+          #allow user to choose the x and y axes for the boxplot
+          boxplot_x = st.selectbox('Select the X-axis column', data.columns)
+          boxplot_y = st.selectbox('Select the Y-axis column', data.columns)
+          sns.boxplot(x=boxplot_x, y=boxplot_y, data = data)
+          st.pyplot()
+        elif selected_seaborn_plot == 'Countplot':
            st.write("## Countplot")
           # allow user to choose the column for the countplot
            countplot_column = st.selectbox('Select a column for the countplot', data.columns)
@@ -168,7 +168,7 @@ if uploaded_file is not None:
               plt.xlabel(barplot_x)
               plt.ylabel(barplot_y)
               st.pyplot()
-     
+
     # Plotly Visualization
     elif selected_plot == "Plotly":
         st.write("### Plotly Visualization")
@@ -182,14 +182,13 @@ if uploaded_file is not None:
             scatterplot_x = st.selectbox("Select the X-axis column", data.columns)
             scatterplot_y = st.selectbox("Select the Y-axis column", data.columns)
             st.plotly_chart(px.scatter(data, x=data[scatterplot_x], y=data[scatterplot_y], title="Scatter Plot"))
-       
+
         elif selected_plotly_plot == "Bar Plot":
             st.write("### Bar Plot")
             # Allow users to choose the x and y axes for the bar plot
             barplot_x = st.selectbox("Select the X-axis column", data.columns)
             barplot_y = st.selectbox("Select the Y-axis column", data.columns)
             st.plotly_chart(px.bar(data, x=data[barplot_x], y=data[barplot_y], title="Bar Plot"))
-
 
     # Machine learning
     st.subheader("Machine Learning")
