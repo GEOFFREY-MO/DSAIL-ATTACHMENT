@@ -7,6 +7,7 @@ import plotly.express as px
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
+from sklearn.preprocessing import StandardScaler, LabelEncoder
 
 # Set page title
 st.set_page_config(page_title="Data Analysis Web App", layout="wide")
@@ -18,7 +19,7 @@ selected_tab = st.sidebar.radio("Navigation", ["Home", "Data Preprocessing", "Ex
 if selected_tab == "Home":
     st.title('Data Analysis Web App')
     st.subheader('Enjoy data analysis without coding and create machine learning models easily with this Giant!')
-    uploaded_file = st.file_uploader("Upload autodata CSV file", type=["csv"])
+    uploaded_file = st.file_uploader("Upload CSV file", type=["csv"])
 
     # Sidebar with options
     st.sidebar.header("RESOURCE")
@@ -43,7 +44,7 @@ if selected_tab == "Home":
 elif selected_tab == "Data Preprocessing":
     st.header("Data Preprocessing")
     st.sidebar.header("RESOURCE")
-    uploaded_file = st.file_uploader("Upload autodata CSV file", type=["csv"])
+    uploaded_file = st.file_uploader("Upload CSV file", type=["csv"])
 
     if uploaded_file is not None:
         data = pd.read_csv(uploaded_file)
@@ -53,53 +54,24 @@ elif selected_tab == "Data Preprocessing":
             st.subheader('Data Preprocessing')
 
             # Handling missing values
-            handle_missing_values = st.checkbox('Handle missing values')
-            if handle_missing_values:
-                st.write('Handling missing values...')
-                # Allow user to choose a method for handling missing values
-                missing_method = st.selectbox(
-                    'Select missing values handling method',
-                    ['Mean', 'Median', 'Drop Rows']
-                )
-                if missing_method == 'Mean':
-                    data.fillna(data.mean(), inplace=True)
-                elif missing_method == 'Median':
-                    data.fillna(data.median(), inplace=True)
-                elif missing_method == 'Drop Rows':
-                    data.dropna(axis=0, inplace=True)
-
-                st.success('Missing values handled.')
+            st.write('Handling missing values...')
+            data.fillna(data.mean(), inplace=True)
+            st.success('Missing values handled.')
 
             # Encoding categorical variables
-            encode_categorical = st.checkbox('Encode categorical variables')
-            if encode_categorical:
-                st.write('Encoding categorical variables...')
-                # Allow users to choose columns for one-hot encoding
-                categorical_columns = st.multiselect(
-                    'Select categorical columns for one-hot encoding', data.select_dtypes(include="object").columns
-                )
-                if categorical_columns:
-                    data = pd.get_dummies(data, columns=categorical_columns, drop_first=True)
-                    st.success('Categorical variables encoded.')
-                else:
-                    st.warning('No categorical columns selected for encoding.')
+            st.write('Encoding categorical variables...')
+            le = LabelEncoder()
+            categorical_columns = data.select_dtypes(include="object").columns
+            for col in categorical_columns:
+                data[col] = le.fit_transform(data[col])
+            st.success('Categorical variables encoded.')
 
             # Scaling numerical features
-            scale_numerical = st.checkbox("Scale numerical features")
-            if scale_numerical:
-                st.write('Scaling numerical features...')
-                # Allow users to choose columns for scaling
-                numerical_columns = st.multiselect(
-                    'Select numerical columns for scaling', data.select_dtypes(include="number").columns
-                )
-                if numerical_columns:
-                    # You can use different scaling methods
-                    data[numerical_columns] = (data[numerical_columns] - data[numerical_columns].min()) / (
-                            data[numerical_columns].max() - data[numerical_columns].min()
-                    )
-                    st.success('Numerical features scaled.')
-                else:
-                    st.warning('No numerical columns selected for scaling.')
+            st.write('Scaling numerical features...')
+            scaler = StandardScaler()
+            numerical_columns = data.select_dtypes(include="number").columns
+            data[numerical_columns] = scaler.fit_transform(data[numerical_columns])
+            st.success('Numerical features scaled.')
 
             # Display the preprocessed data
             st.subheader('Preprocessed Data')
@@ -109,7 +81,7 @@ elif selected_tab == "Data Preprocessing":
 elif selected_tab == "Exploration and Visualization":
     st.header("Explore and Visualize Data")
     st.sidebar.header("RESOURCE")
-    uploaded_file = st.file_uploader("Upload autodata CSV file", type=["csv"])
+    uploaded_file = st.file_uploader("Upload CSV file", type=["csv"])
 
     if uploaded_file is not None:
         data = pd.read_csv(uploaded_file)
@@ -204,9 +176,9 @@ elif selected_tab == "Exploration and Visualization":
 
 # Machine Learning tab
 elif selected_tab == "Machine Learning":
-    st.subheader("Machine Learning")
+    st.header("Machine Learning")
     st.sidebar.header("RESOURCE")
-    uploaded_file = st.file_uploader("Upload autodata CSV file", type=["csv"])
+    uploaded_file = st.file_uploader("Upload CSV file", type=["csv"])
 
     if uploaded_file is not None:
         data = pd.read_csv(uploaded_file)
