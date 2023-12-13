@@ -62,7 +62,6 @@ elif selected_tab == "Data Preprocessing":
                     data.dropna(axis=0, inplace=True)
 
                 st.success('Missing values handled.')
-
         # Encoding categorical variables
         encode_categorical = st.checkbox('Encode categorical variables')
         if encode_categorical:
