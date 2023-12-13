@@ -214,6 +214,12 @@ elif selected_tab == "Machine Learning":
                 features, data[target_variable], test_size=0.2, random_state=42
             )
 
+            # Check if 'model' is defined
+            try:
+                model
+            except NameError:
+                st.error("Model is not defined.")
+
             # Build the selected model
             model.fit(X_train, y_train)
 
