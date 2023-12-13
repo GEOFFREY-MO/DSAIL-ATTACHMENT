@@ -200,13 +200,17 @@ elif selected_tab == "Machine Learning":
             target_variable = st.selectbox("Select the target variable", data.columns)
             features = data.drop(columns=[target_variable])
 
-            # Model selection with dynamic options
-            model_options = ["Random Forest", "Decision Tree", "Support Vector Machine"]
-            selected_model = st.selectbox("Select Machine Learning Model", model_options)
+            # Identify categorical columns for one-hot encoding
+            categorical_columns = data.select_dtypes(include="object").columns
+
+            # One-hot encode categorical variables
+            data = pd.get_dummies(data, columns=categorical_columns, drop_first=True)
 
             # Build selected model
             if selected_model == "Random Forest":
                 model = RandomForestClassifier()
+                st.write("Random Forest model created.")
+
             # Add more models as needed
 
             # Split data into training and testing sets
