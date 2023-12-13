@@ -105,27 +105,27 @@ if uploaded_file is not None:
     plot_options = ["Seaborn", "Matplotlib", "Plotly"]
     selected_plot = st.selectbox("Select Visualization Tool", plot_options)
 
-if selected_plot == "Seaborn":
-    st.write("### Seaborn Visualization")
-    #dynamic dropdown for seaborn plot selection
-    seaborn_plot_options= ['Histogram','Boxplot','Countplot']
-    selected_seaborn_plot = st.selectbox('Select Seaborn Plot', seaborn_plot_options)
+   if selected_plot == "Seaborn":
+      st.write("### Seaborn Visualization")
+     #dynamic dropdown for seaborn plot selection
+      seaborn_plot_options= ['Histogram','Boxplot','Countplot']
+      selected_seaborn_plot = st.selectbox('Select Seaborn Plot', seaborn_plot_options)
     #Seaborn code based on user's selection
-    if selected_seaborn_plot == 'Histogram':
-      st.write('## Histogram')
-      # allow users to choose the column for the histogram
-      hist_column = st.selectbox('Select a column for the histogram', data.columns)
-      sns.histplot(data[hist_column], kde = True)
-      st.pyplot()
+      if selected_seaborn_plot == 'Histogram':
+        st.write('## Histogram')
+        # allow users to choose the column for the histogram
+        hist_column = st.selectbox('Select a column for the histogram', data.columns)
+        sns.histplot(data[hist_column], kde = True)
+        st.pyplot()
     
-    elif selected_seaborn_plot == 'Boxplot':
-      st.write('## Boxplot')
-      #allow user to choose the x and y axes for the boxplot
-      boxplot_x = st.selectbox('Select the X-axis column', data.columns)
-      boxplot_y = st.selectbox('Select the Y-axis column', data.columns)
-      sns.boxplot(x=boxplot_x, y=boxplot_y, data = data)
-      st.pyplot()
-    elif selected_seaborn_plot == 'Countplot':
+      elif selected_seaborn_plot == 'Boxplot':
+        st.write('## Boxplot')
+        #allow user to choose the x and y axes for the boxplot
+        boxplot_x = st.selectbox('Select the X-axis column', data.columns)
+        boxplot_y = st.selectbox('Select the Y-axis column', data.columns)
+        sns.boxplot(x=boxplot_x, y=boxplot_y, data = data)
+        st.pyplot()
+      elif selected_seaborn_plot == 'Countplot':
            st.write("## Countplot")
           # allow user to choose the column for the countplot
            countplot_column = st.selectbox('Select a column for the countplot', data.columns)
