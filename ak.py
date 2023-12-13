@@ -55,8 +55,22 @@ elif selected_tab == "Data Preprocessing":
 
             # Handling missing values
             st.write('Handling missing values...')
-            data.fillna(data.mean(), inplace=True)
-            st.success('Missing values handled.')
+            if data.isnull().values.any():  # Check if there are any missing values
+                # Allow user to choose a method for handling missing values
+                missing_method = st.selectbox(
+                    'Select missing values handling method',
+                    ['Mean', 'Median', 'Drop Rows']
+                )
+                if missing_method == 'Mean':
+                    data.fillna(data.mean(), inplace=True)
+                elif missing_method == 'Median':
+                    data.fillna(data.median(), inplace=True)
+                elif missing_method == 'Drop Rows':
+                    data.dropna(axis=0, inplace=True)
+
+                st.success('Missing values handled.')
+            else:
+                st.warning('No missing values in the dataset.')
 
             # Encoding categorical variables
             st.write('Encoding categorical variables...')
@@ -122,7 +136,7 @@ elif selected_tab == "Exploration and Visualization":
             st.write("### Matplotlib Visualization")
             # dynamic dropdown for matplotlib plot selection
             matplotlib_plot_options = ['Line Plot', 'Scatter Plot', 'Bar plot']
-            selected_matplotlib_plot = st.selectedbox('Select Matplotlib Plot', matplotlib_plot_options)
+            selected_matplotlib_plot = st.selectbox('Select Matplotlib Plot', matplotlib_plot_options)
             # matplotlib code based on user's selection
             if selected_matplotlib_plot == 'Line Plot':
                 st.write('### Line Plot')
@@ -132,7 +146,8 @@ elif selected_tab == "Exploration and Visualization":
                 plt.plot(data[lineplot_x], data[lineplot_y])
                 plt.xlabel(lineplot_x)
                 plt.ylabel(lineplot_x)
-                st.plotly()
+                st.pyplot()
+
             elif selected_matplotlib_plot == "Scatter Plot":
                 st.write("### Scatter Plot")
                 # Allow users to choose the x and y axes for the scatter plot
