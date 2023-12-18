@@ -49,7 +49,6 @@ elif selected_tab == "Data Preprocessing":
             handle_missing_values = st.checkbox('Handle missing values')
             if handle_missing_values:
                 st.write('Handling missing values...')
-                # allow user to choose a method for handling missing values
                 missing_method = st.selectbox(
                     'Select missing values handling method',
                     ['Mean', 'Median', 'Drop Rows']
@@ -60,15 +59,12 @@ elif selected_tab == "Data Preprocessing":
                     data.fillna(data.median(), inplace=True)
                 elif missing_method == 'Drop Rows':
                     data.dropna(axis=0, inplace=True)
-                else:
-                    st.warning('Please select a method for handling missing values.')
                 st.success('Missing values handled.')
 
         # Encoding categorical variables
         encode_categorical = st.checkbox('Encode categorical variables')
         if encode_categorical:
             st.write('Encoding categorical variables...')
-            # allow users to choose columns for one-hot encoding
             categorical_columns = st.multiselect(
                 'Select categorical columns for one-hot encoding', data.select_dtypes(include="object").columns
             )
@@ -82,12 +78,10 @@ elif selected_tab == "Data Preprocessing":
         scale_numerical = st.checkbox("Scale numerical features")
         if scale_numerical:
             st.write('Scaling numerical features...')
-            # allow users to choose columns for scaling
             numerical_columns = st.multiselect(
                 'Select numerical columns for scaling', data.select_dtypes(include="number").columns
             )
             if numerical_columns:
-                # you can use different scaling method
                 data[numerical_columns] = (data[numerical_columns] - data[numerical_columns].min()) / (
                         data[numerical_columns].max() - data[numerical_columns].min()
                 )
@@ -219,12 +213,20 @@ elif selected_tab == "Machine Learning":
                     features, data[target_variable], test_size=0.2, random_state=42
                 )
 
-                # Build the selected model
-                model.fit(X_train, y_train)
+                # Check for non-finite values in the training data
+                if not X_train.isfinite().all().all():
+                    st.error("Training data contains non-finite values. Please handle or remove them.")
+                else:
+                    # Build the selected model
+                    model.fit(X_train, y_train)
 
-                # Make predictions on the test set
-                predictions = model.predict(X_test)
+                    # Check for non-finite values in the test data
+                    if not X_test.isfinite().all().all():
+                        st.error("Test data contains non-finite values. Please handle or remove them.")
+                    else:
+                        # Make predictions on the test set
+                        predictions = model.predict(X_test)
 
-                # Evaluate the model
-                accuracy = accuracy_score(y_test, predictions)
-                st.write(f"Accuracy: {accuracy:.2f}")
+                        # Evaluate the model
+                        accuracy = accuracy_score(y_test, predictions)
+                        st.write(f"Accuracy: {accuracy:.2f}")
