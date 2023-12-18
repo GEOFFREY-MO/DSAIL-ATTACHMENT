@@ -55,7 +55,13 @@ elif selected_tab == "Data Preprocessing":
                     ['Mean', 'Median', 'Drop Rows']
                 )
                 if missing_method == 'Mean':
-                    data.fillna(data.mean(), inplace=True)
+                    # Handle missing values for numeric columns
+                    numeric_columns = data.select_dtypes(include="number").columns
+                    data[numeric_columns] = data[numeric_columns].fillna(data[numeric_columns].mean())
+
+                    # Handle missing values for non-numeric columns
+                    non_numeric_columns = data.select_dtypes(exclude="number").columns
+                    data[non_numeric_columns] = data[non_numeric_columns].fillna(data[non_numeric_columns].mode().iloc[0])
                 elif missing_method == 'Median':
                     data.fillna(data.median(), inplace=True)
                 elif missing_method == 'Drop Rows':
@@ -64,40 +70,40 @@ elif selected_tab == "Data Preprocessing":
                     st.warning('Please select a method for handling missing values.')
                 st.success('Missing values handled.')
 
-        # Encoding categorical variables
-        encode_categorical = st.checkbox('Encode categorical variables')
-        if encode_categorical:
-            st.write('Encoding categorical variables...')
-            # allow users to choose columns for one-hot encoding
-            categorical_columns = st.multiselect(
-                'Select categorical columns for one-hot encoding', data.select_dtypes(include="object").columns
-            )
-            if categorical_columns:
-                data = pd.get_dummies(data, columns=categorical_columns, drop_first=True)
-                st.success('Categorical variables encoded.')
-            else:
-                st.warning('No categorical columns selected for encoding.')
-
-        # Scaling numerical features
-        scale_numerical = st.checkbox("Scale numerical features")
-        if scale_numerical:
-            st.write('Scaling numerical features...')
-            # allow users to choose columns for scaling
-            numerical_columns = st.multiselect(
-                'Select numerical columns for scaling', data.select_dtypes(include="number").columns
-            )
-            if numerical_columns:
-                # you can use different scaling method
-                data[numerical_columns] = (data[numerical_columns] - data[numerical_columns].min()) / (
-                        data[numerical_columns].max() - data[numerical_columns].min()
+            # Encoding categorical variables
+            encode_categorical = st.checkbox('Encode categorical variables')
+            if encode_categorical:
+                st.write('Encoding categorical variables...')
+                # allow users to choose columns for one-hot encoding
+                categorical_columns = st.multiselect(
+                    'Select categorical columns for one-hot encoding', data.select_dtypes(include="object").columns
                 )
-                st.success('Numerical features scaled.')
-            else:
-                st.warning('No numerical columns selected for scaling.')
+                if categorical_columns:
+                    data = pd.get_dummies(data, columns=categorical_columns, drop_first=True)
+                    st.success('Categorical variables encoded.')
+                else:
+                    st.warning('No categorical columns selected for encoding.')
 
-        # Display the preprocessed data
-        st.subheader('Preprocessed Data')
-        st.write(data.head())
+            # Scaling numerical features
+            scale_numerical = st.checkbox("Scale numerical features")
+            if scale_numerical:
+                st.write('Scaling numerical features...')
+                # allow users to choose columns for scaling
+                numerical_columns = st.multiselect(
+                    'Select numerical columns for scaling', data.select_dtypes(include="number").columns
+                )
+                if numerical_columns:
+                    # you can use different scaling method
+                    data[numerical_columns] = (data[numerical_columns] - data[numerical_columns].min()) / (
+                            data[numerical_columns].max() - data[numerical_columns].min()
+                    )
+                    st.success('Numerical features scaled.')
+                else:
+                    st.warning('No numerical columns selected for scaling.')
+
+            # Display the preprocessed data
+            st.subheader('Preprocessed Data')
+            st.write(data.head())
 
 # Explore and Visualize tab
 elif selected_tab == "Explore and Visualize":
