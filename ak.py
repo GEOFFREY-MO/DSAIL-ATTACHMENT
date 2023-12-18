@@ -60,8 +60,10 @@ elif selected_tab == "Data Preprocessing":
                     data.fillna(data.median(), inplace=True)
                 elif missing_method == 'Drop Rows':
                     data.dropna(axis=0, inplace=True)
-
+                else:
+                    st.warning('Please select a method for handling missing values.')
                 st.success('Missing values handled.')
+
         # Encoding categorical variables
         encode_categorical = st.checkbox('Encode categorical variables')
         if encode_categorical:
@@ -137,7 +139,7 @@ elif selected_tab == "Explore and Visualize":
 
         elif selected_plot == "Matplotlib":
             st.write("### Matplotlib Visualization")
-            matplotlib_plot_options = ['Line Plot', 'Scatter Plot', 'Bar plot']
+            matplotlib_plot_options = ['Line Plot', 'Scatter Plot', 'Bar Plot']
             selected_matplotlib_plot = st.selectbox('Select Matplotlib Plot', matplotlib_plot_options)
 
             if selected_matplotlib_plot == 'Line Plot':
@@ -165,7 +167,7 @@ elif selected_tab == "Explore and Visualize":
                 barplot_x = st.selectbox("Select the X-axis column", data.columns)
                 barplot_y = st.selectbox("Select the Y-axis column", data.columns)
                 fig, ax = plt.subplots()
-                ax.bar(data[barplot_x], data[barplot_y])
+                ax.barh(data[barplot_x], data[barplot_y])  # Use barh for horizontal bar plot
                 ax.set_xlabel(barplot_x)
                 ax.set_ylabel(barplot_y)
                 st.pyplot(fig)
@@ -207,29 +209,22 @@ elif selected_tab == "Machine Learning":
             data = pd.get_dummies(data, columns=categorical_columns, drop_first=True)
 
             # Build selected model
+            selected_model = st.selectbox("Select a machine learning model", ["Random Forest", "SVM", "Other Models"])
             if selected_model == "Random Forest":
                 model = RandomForestClassifier()
                 st.write("Random Forest model created.")
 
-            # Add more models as needed
+                # Split data into training and testing sets
+                X_train, X_test, y_train, y_test = train_test_split(
+                    features, data[target_variable], test_size=0.2, random_state=42
+                )
 
-            # Split data into training and testing sets
-            X_train, X_test, y_train, y_test = train_test_split(
-                features, data[target_variable], test_size=0.2, random_state=42
-            )
+                # Build the selected model
+                model.fit(X_train, y_train)
 
-            # Check if 'model' is defined
-            try:
-                model
-            except NameError:
-                st.error("Model is not defined.")
+                # Make predictions on the test set
+                predictions = model.predict(X_test)
 
-            # Build the selected model
-            model.fit(X_train, y_train)
-
-            # Make predictions on the test set
-            predictions = model.predict(X_test)
-
-            # Evaluate the model
-            accuracy = accuracy_score(y_test, predictions)
-            st.write(f"Accuracy: {accuracy:.2f}")
+                # Evaluate the model
+                accuracy = accuracy_score(y_test, predictions)
+                st.write(f"Accuracy: {accuracy:.2f}")
