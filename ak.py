@@ -104,7 +104,7 @@ elif selected_tab == "Data Preprocessing":
 
                 # Display the preprocessed data
                 st.subheader('Preprocessed Data')
-                st.write(data.head())
+                st.write(data)
 
         except Exception as e:
             st.error(f"An error occurred: {str(e)}")
