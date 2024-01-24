@@ -9,8 +9,30 @@ from sklearn.svm import SVC
 from sklearn.metrics import accuracy_score, classification_report, roc_curve, auc
 
 # Set page title
-st.set_page_config(page_title="Data Analysis Web App", layout="wide")
+#st.set_page_config(page_title="Data Analysis Web App", layout="wide")
+# Set page title and configure layout
+st.set_page_config(
+    page_title="Data Analysis Web App",
+    layout="wide",
+    initial_sidebar_state="expanded",  # Adjust sidebar state as needed
+)
 
+# Set custom styles
+st.markdown(
+    """
+    <style>
+    .big-font {
+        font-size: 24px !important;
+        color: #FF5733 !important;  /* Change color to your preferred value */
+    }
+    .highlight {
+        background-color: #F4F4F4;  /* Change background color to your preferred value */
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+##
 # Sidebar with options
 st.sidebar.header("RESOURCE")
 show_raw_data = st.sidebar.checkbox("Show Raw Data")
