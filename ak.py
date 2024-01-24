@@ -252,6 +252,57 @@ elif selected_tab == "Machine Learning":
                     accuracy = accuracy_score(y_test, predictions)
                     st.write(f"Accuracy: {accuracy:.2f}")
 
+                    # Display confusion matrix
+                    st.subheader("Confusion Matrix")
+                    st.write(pd.crosstab(y_test, predictions, rownames=['Actual'], colnames=['Predicted']))
+
+                    # Display precision, recall, and F1-score
+                    st.subheader("Classification Report")
+                    classification_report_str = classification_report(y_test, predictions)
+                    st.text(classification_report_str)
+
+                    # ROC Curve and AUC
+                    st.subheader("Receiver Operating Characteristic (ROC) Curve")
+                    fpr, tpr, thresholds = roc_curve(y_test, model.predict_proba(X_test)[:, 1])
+                    roc_auc = auc(fpr, tpr)
+
+                    fig, ax = plt.subplots()
+                    plt.plot(fpr, tpr, label=f'AUC = {roc_auc:.2f}')
+                    plt.plot([0, 1], [0, 1], 'k--')
+                    plt.xlim([0.0, 1.0])
+                    plt.ylim([0.0, 1.0])
+                    plt.xlabel('False Positive Rate')
+                    plt.ylabel('True Positive Rate')
+                    plt.title('ROC Curve')
+                    plt.legend(loc="lower right")
+                    st.pyplot(fig)
+
+                # Add more models as needed
+                elif selected_model == "SVM":
+                    # Support Vector Machine (SVM) model
+                    model = SVC()  # Import the required class, SVC (Support Vector Classification)
+                    st.write("SVM model created.")
+
+                # Split data into training and testing sets
+                X_train, X_test, y_train, y_test = train_test_split(
+                    features, data[target_variable], test_size=0.2, random_state=42
+                )
+
+                # Build the selected model
+                model.fit(X_train, y_train)
+
+                # Make predictions on the test set
+                predictions = model.predict(X_test)
+                # Evaluate the model
+                accuracy = accuracy_score(y_test, predictions)
+                st.write(f"Accuracy: {accuracy:.2f}")
+
+
+
+                elif selected_model == "Other Models":
+                    # Include code for other models
+                    pass
+
         except Exception as e:
             st.error(f"An error occurred: {str(e)}")
     else:
