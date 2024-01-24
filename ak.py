@@ -24,8 +24,33 @@ if 'data' not in st.session_state:
 selected_tab = st.sidebar.radio("### Navigation", ["Home", "Data Preprocessing", "Explore and Visualize", "Machine Learning"])
 
 # Home tab
+# Home tab
 if selected_tab == "Home":
     st.header("Welcome to the Data Analysis Web App")
+
+    st.write(
+        "This web app is designed for data analysis tasks. "
+        "You can upload a CSV file, preprocess the data, "
+        "explore and visualize it, and even build machine learning models."
+    )
+
+    st.subheader("Features:")
+    st.markdown("- **Data Preprocessing:** Clean and preprocess your dataset.")
+    st.markdown("- **Exploration and Visualization:** Explore your data using different visualization tools.")
+    st.markdown("- **Machine Learning:** Build and evaluate machine learning models.")
+
+    st.subheader("How to Use:")
+    st.markdown(
+        "1. Navigate through the tabs on the left sidebar to access different functionalities."
+    )
+    st.markdown("2. In the 'Data Preprocessing' tab, upload a CSV file to get started.")
+    st.markdown("3. Follow the instructions in each tab to perform specific tasks.")
+
+    st.subheader("Note:")
+    st.markdown(
+        "Make sure to preprocess the data before moving to the 'Explore and Visualize' "
+        "and 'Machine Learning' tabs for better results."
+    )
 
 # Data Preprocessing tab
 elif selected_tab == "Data Preprocessing":
