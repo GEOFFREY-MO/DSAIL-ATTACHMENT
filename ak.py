@@ -123,8 +123,10 @@ elif selected_tab == "Data Preprocessing":
 elif selected_tab == "Explore and Visualize":
     st.header("Explore and Visualize Data")
 
-    # Check if data is loaded
-    if data is not None:
+    # Check if data is preprocessed
+    if state.data is not None:
+        data = state.data  # Use the preprocessed data for visualization
+
         try:
             plot_options = ["Seaborn", "Matplotlib", "Plotly"]
             selected_plot = st.selectbox("Select Visualization Tool", plot_options)
@@ -156,19 +158,72 @@ elif selected_tab == "Explore and Visualize":
                     sns.countplot(x=countplot_column, data=data)
                     st.pyplot(fig)
 
-            # Similarly, update the code for Matplotlib and Plotly visualizations using the 'data' variable.
+            elif selected_plot == "Matplotlib":
+                st.write("### Matplotlib Visualization")
+                matplotlib_plot_options = ['Line Plot', 'Scatter Plot', 'Bar Plot']
+                selected_matplotlib_plot = st.selectbox('Select Matplotlib Plot', matplotlib_plot_options)
+
+                if selected_matplotlib_plot == 'Line Plot':
+                    st.write('### Line Plot')
+                    lineplot_x = st.selectbox('Select the X-axis column', data.columns)
+                    lineplot_y = st.selectbox('Select the Y-axis column', data.columns)
+                    fig, ax = plt.subplots()
+                    ax.plot(data[lineplot_x], data[lineplot_y])
+                    ax.set_xlabel(lineplot_x)
+                    ax.set_ylabel(lineplot_y)
+                    st.pyplot(fig)
+
+                elif selected_matplotlib_plot == "Scatter Plot":
+                    st.write("### Scatter Plot")
+                    scatterplot_x = st.selectbox("Select the X-axis column", data.columns)
+                    scatterplot_y = st.selectbox("Select the Y-axis column", data.columns)
+                    fig, ax = plt.subplots()
+                    ax.scatter(data[scatterplot_x], data[scatterplot_y])
+                    ax.set_xlabel(scatterplot_x)
+                    ax.set_ylabel(scatterplot_y)
+                    st.pyplot(fig)
+
+                elif selected_matplotlib_plot == "Bar Plot":
+                    st.write("### Bar Plot")
+                    barplot_x = st.selectbox("Select the X-axis column", data.columns)
+                    barplot_y = st.selectbox("Select the Y-axis column", data.columns)
+                    fig, ax = plt.subplots()
+                    ax.barh(data[barplot_x], data[barplot_y])  # Use barh for horizontal bar plot
+                    ax.set_xlabel(barplot_x)
+                    ax.set_ylabel(barplot_y)
+                    st.pyplot(fig)
+
+            # Plotly Visualization
+            elif selected_plot == "Plotly":
+                st.write("### Plotly Visualization")
+                plotly_plot_options = ["Scatter Plot", "Line Plot", "Bar Plot"]
+                selected_plotly_plot = st.selectbox("Select Plotly Plot", plotly_plot_options)
+
+                if selected_plotly_plot == "Scatter Plot":
+                    st.write("### Scatter Plot")
+                    scatterplot_x = st.selectbox("Select the X-axis column", data.columns)
+                    scatterplot_y = st.selectbox("Select the Y-axis column", data.columns)
+                    st.plotly_chart(px.scatter(data, x=data[scatterplot_x], y=data[scatterplot_y], title="Scatter Plot"))
+
+                elif selected_plotly_plot == "Bar Plot":
+                    st.write("### Bar Plot")
+                    barplot_x = st.selectbox("Select the X-axis column", data.columns)
+                    barplot_y = st.selectbox("Select the Y-axis column", data.columns)
+                    st.plotly_chart(px.bar(data, x=data[barplot_x], y=data[barplot_y], title="Bar Plot"))
 
         except Exception as e:
             st.error(f"An error occurred: {str(e)}")
     else:
-        st.warning("Please upload a CSV file in the 'Data Preprocessing' tab first.")
+        st.warning("Please preprocess the data in the 'Data Preprocessing' tab first.")
 
 # Machine Learning tab
 elif selected_tab == "Machine Learning":
     st.header("Machine Learning")
 
-    # Check if data is loaded
-    if data is not None:
+    # Check if data is preprocessed
+    if state.data is not None:
+        data = state.data  # Use the preprocessed data for machine learning
+
         try:
             if st.checkbox("Build machine learning models"):
                 target_variable = st.selectbox("Select the target variable", data.columns)
@@ -204,4 +259,4 @@ elif selected_tab == "Machine Learning":
         except Exception as e:
             st.error(f"An error occurred: {str(e)}")
     else:
-        st.warning("Please upload a CSV file in the 'Data Preprocessing' tab first.")
+        st.warning("Please preprocess the data in the 'Data Preprocessing' tab first.")
