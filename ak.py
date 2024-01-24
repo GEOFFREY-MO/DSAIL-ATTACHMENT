@@ -16,6 +16,8 @@ class SessionState:
     def __init__(self, **kwargs):
         for key, val in kwargs.items():
             setattr(self, key, val)
+# Create or get the session state
+session_state = SessionState(data=None)
 
 def get_session_state(**kwargs):
     ctx = ReportThread.get_report_ctx()
