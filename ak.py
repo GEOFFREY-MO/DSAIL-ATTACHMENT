@@ -299,7 +299,7 @@ elif selected_tab == "Machine Learning":
 
 
 
-                elif selected_model == "Other Models":
+               elif selected_model == "Other Models":
                     # Include code for other models
                     pass
 
