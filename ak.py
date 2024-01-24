@@ -5,7 +5,8 @@ import matplotlib.pyplot as plt
 import plotly.express as px
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import accuracy_score
+from sklearn.svm import SVC
+from sklearn.metrics import accuracy_score, classification_report, roc_curve, auc
 
 # Set page title
 st.set_page_config(page_title="Data Analysis Web App", layout="wide")
@@ -283,23 +284,23 @@ elif selected_tab == "Machine Learning":
                     model = SVC()  # Import the required class, SVC (Support Vector Classification)
                     st.write("SVM model created.")
 
-                # Split data into training and testing sets
-                X_train, X_test, y_train, y_test = train_test_split(
-                    features, data[target_variable], test_size=0.2, random_state=42
-                )
+                    # Split data into training and testing sets
+                    X_train, X_test, y_train, y_test = train_test_split(
+                        features, data[target_variable], test_size=0.2, random_state=42
+                    )
 
-                # Build the selected model
-                model.fit(X_train, y_train)
+                    # Build the selected model
+                    model.fit(X_train, y_train)
 
-                # Make predictions on the test set
-                predictions = model.predict(X_test)
-                # Evaluate the model
-                accuracy = accuracy_score(y_test, predictions)
-                st.write(f"Accuracy: {accuracy:.2f}")
+                    # Make predictions on the test set
+                    predictions = model.predict(X_test)
 
+                    # Evaluate the model
+                    accuracy = accuracy_score(y_test, predictions)
+                    st.write(f"Accuracy: {accuracy:.2f}")
 
-
-               elif selected_model == "Other Models":
+                # Add more models as needed
+                elif selected_model == "Other Models":
                     # Include code for other models
                     pass
 
