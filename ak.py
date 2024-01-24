@@ -120,7 +120,7 @@ elif selected_tab == "Data Preprocessing":
             st.error(f"An error occurred: {str(e)}")
 
 # Explore and Visualize tab
-elif selected_tab == "Explore and View":
+elif selected_tab == "Explore and Visualize":
     st.header("Explore and Visualize Data")
 
     # Check if data is preprocessed
