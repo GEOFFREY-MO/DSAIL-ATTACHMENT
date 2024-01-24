@@ -6,8 +6,11 @@ import plotly.express as px
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
-import streamlit.ReportThread as ReportThread
-from streamlit.server.Server import Server
+import streamlit as st
+
+# Access the current report thread
+report_thread = st.report_thread()
+
 # Define a SessionState class to persistently store data
 class SessionState:
     def __init__(self, **kwargs):
