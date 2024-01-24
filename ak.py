@@ -5,40 +5,19 @@ import matplotlib.pyplot as plt
 import plotly.express as px
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.svm import SVC
-from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import accuracy_score
 
-# Access the current report thread
-report_thread = st.report_thread()
-
-# Define a SessionState class to persistently store data
-class SessionState:
-    def __init__(self, **kwargs):
-        for key, val in kwargs.items():
-            setattr(self, key, val)
-            
-# Create or get the session state
-def get_session_state(**kwargs):
-    ctx = ReportThread.get_report_ctx()
-    this_session = None
-    current_server = st.server.server.Server.get_current()
-    if hasattr(current_server, '_session_states'):
-        if ctx.session_id not in current_server._session_states:
-            current_server._session_states[ctx.session_id] = SessionState(**kwargs)
-        this_session = current_server._session_states[ctx.session_id]
-    return this_session
-    
 # Set page title
 st.set_page_config(page_title="Data Analysis Web App", layout="wide")
-
-# Initialize session state
-state = SessionState(data=None)
 
 # Sidebar with options
 st.sidebar.header("RESOURCE")
 show_raw_data = st.sidebar.checkbox("Show Raw Data")
 show_summary_statistics = st.sidebar.checkbox("Show Summary Statistics")
+
+# Initialize session state
+if 'data' not in st.session_state:
+    st.session_state.data = None
 
 # Main content area
 selected_tab = st.sidebar.radio("Navigation", ["Home", "Data Preprocessing", "Explore and Visualize", "Machine Learning"])
@@ -127,12 +106,11 @@ elif selected_tab == "Data Preprocessing":
                         st.warning('No numerical columns selected for scaling.')
 
                 # Store preprocessed data in session state
-                session_state = get_session_state(data=None)
-                session_state.data = data.copy()
+                st.session_state.data = data.copy()
 
                 # Display the preprocessed data
                 st.subheader('Preprocessed Data')
-                st.write(state.data)
+                st.write(st.session_state.data)
 
         except Exception as e:
             st.error(f"An error occurred: {str(e)}")
@@ -142,9 +120,8 @@ elif selected_tab == "Explore and Visualize":
     st.header("Explore and Visualize Data")
 
     # Check if data is preprocessed
-    session_state = get_session_state()
-    if session_state.data is not None:
-        data = session_state.data  # Use the preprocessed data for visualization
+    if st.session_state.data is not None:
+        data = st.session_state.data  # Use the preprocessed data for visualization
 
         try:
             plot_options = ["Seaborn", "Matplotlib", "Plotly"]
@@ -240,9 +217,8 @@ elif selected_tab == "Machine Learning":
     st.header("Machine Learning")
 
     # Check if data is preprocessed
-    session_state = get_session_state()
-    if session_state.data is not None:
-        data = session_state.data  # Use the preprocessed data for machine learning
+    if st.session_state.data is not None:
+        data = st.session_state.data  # Use the preprocessed data for machine learning
 
         try:
             if st.checkbox("Build machine learning models"):
@@ -256,33 +232,25 @@ elif selected_tab == "Machine Learning":
                 data = pd.get_dummies(data, columns=categorical_columns, drop_first=True)
 
                 # Build selected model
-                selected_model = st.selectbox("Select a machine learning model", ["Random Forest", "SVM", "Decision Tree", "Other Models"])
+                selected_model = st.selectbox("Select a machine learning model", ["Random Forest", "SVM", "Other Models"])
                 if selected_model == "Random Forest":
                     model = RandomForestClassifier()
                     st.write("Random Forest model created.")
-                elif selected_model == "SVM":
-                    # Support Vector Machine (SVM) model
-                    model = SVC()  # Import the required class, SVC (Support Vector Classification)
-                    st.write("SVM model created.")
-                elif selected_model == "Decision Tree":
-                    # Decision Tree model
-                    model = DecisionTreeClassifier()
-                    st.write("Decision Tree model created.")
 
-                # Split data into training and testing sets
-                X_train, X_test, y_train, y_test = train_test_split(
-                    features, data[target_variable], test_size=0.2, random_state=42
-                )
+                    # Split data into training and testing sets
+                    X_train, X_test, y_train, y_test = train_test_split(
+                        features, data[target_variable], test_size=0.2, random_state=42
+                    )
 
-                # Build the selected model
-                model.fit(X_train, y_train)
+                    # Build the selected model
+                    model.fit(X_train, y_train)
 
-                # Make predictions on the test set
-                predictions = model.predict(X_test)
+                    # Make predictions on the test set
+                    predictions = model.predict(X_test)
 
-                # Evaluate the model
-                accuracy = accuracy_score(y_test, predictions)
-                st.write(f"Accuracy: {accuracy:.2f}")
+                    # Evaluate the model
+                    accuracy = accuracy_score(y_test, predictions)
+                    st.write(f"Accuracy: {accuracy:.2f}")
 
         except Exception as e:
             st.error(f"An error occurred: {str(e)}")
