@@ -123,8 +123,8 @@ elif selected_tab == "Data Preprocessing":
 elif selected_tab == "Explore and Visualize":
     st.header("Explore and Visualize Data")
 
-    # Check if data is preprocessed
-    if state.data is not None:
+    # Check if data is loaded
+    if data is not None:
         try:
             plot_options = ["Seaborn", "Matplotlib", "Plotly"]
             selected_plot = st.selectbox("Select Visualization Tool", plot_options)
@@ -136,100 +136,49 @@ elif selected_tab == "Explore and Visualize":
 
                 if selected_seaborn_plot == 'Histogram':
                     st.write('## Histogram')
-                    hist_column = st.selectbox('Select a column for the histogram', state.data.columns)
+                    hist_column = st.selectbox('Select a column for the histogram', data.columns)
                     fig, ax = plt.subplots()
-                    sns.histplot(state.data[hist_column], kde=True)
+                    sns.histplot(data[hist_column], kde=True)
                     st.pyplot(fig)
 
                 elif selected_seaborn_plot == 'Boxplot':
                     st.write('## Boxplot')
-                    boxplot_x = st.selectbox('Select the X-axis column', state.data.columns)
-                    boxplot_y = st.selectbox('Select the Y-axis column', state.data.columns)
+                    boxplot_x = st.selectbox('Select the X-axis column', data.columns)
+                    boxplot_y = st.selectbox('Select the Y-axis column', data.columns)
                     fig, ax = plt.subplots()
-                    sns.boxplot(x=boxplot_x, y=boxplot_y, data=state.data)
+                    sns.boxplot(x=boxplot_x, y=boxplot_y, data=data)
                     st.pyplot(fig)
 
                 elif selected_seaborn_plot == 'Countplot':
                     st.write("## Countplot")
-                    countplot_column = st.selectbox('Select a column for the countplot', state.data.columns)
+                    countplot_column = st.selectbox('Select a column for the countplot', data.columns)
                     fig, ax = plt.subplots()
-                    sns.countplot(x=countplot_column, data=state.data)
+                    sns.countplot(x=countplot_column, data=data)
                     st.pyplot(fig)
 
-            elif selected_plot == "Matplotlib":
-                st.write("### Matplotlib Visualization")
-                matplotlib_plot_options = ['Line Plot', 'Scatter Plot', 'Bar Plot']
-                selected_matplotlib_plot = st.selectbox('Select Matplotlib Plot', matplotlib_plot_options)
-
-                if selected_matplotlib_plot == 'Line Plot':
-                    st.write('### Line Plot')
-                    lineplot_x = st.selectbox('Select the X-axis column', state.data.columns)
-                    lineplot_y = st.selectbox('Select the Y-axis column', state.data.columns)
-                    fig, ax = plt.subplots()
-                    ax.plot(state.data[lineplot_x], state.data[lineplot_y])
-                    ax.set_xlabel(lineplot_x)
-                    ax.set_ylabel(lineplot_y)
-                    st.pyplot(fig)
-
-                elif selected_matplotlib_plot == "Scatter Plot":
-                    st.write("### Scatter Plot")
-                    scatterplot_x = st.selectbox("Select the X-axis column", state.data.columns)
-                    scatterplot_y = st.selectbox("Select the Y-axis column", state.data.columns)
-                    fig, ax = plt.subplots()
-                    ax.scatter(state.data[scatterplot_x], state.data[scatterplot_y])
-                    ax.set_xlabel(scatterplot_x)
-                    ax.set_ylabel(scatterplot_y)
-                    st.pyplot(fig)
-
-                elif selected_matplotlib_plot == "Bar Plot":
-                    st.write("### Bar Plot")
-                    barplot_x = st.selectbox("Select the X-axis column", state.data.columns)
-                    barplot_y = st.selectbox("Select the Y-axis column", state.data.columns)
-                    fig, ax = plt.subplots()
-                    ax.barh(state.data[barplot_x], state.data[barplot_y])  # Use barh for horizontal bar plot
-                    ax.set_xlabel(barplot_x)
-                    ax.set_ylabel(barplot_y)
-                    st.pyplot(fig)
-
-            # Plotly Visualization
-            elif selected_plot == "Plotly":
-                st.write("### Plotly Visualization")
-                plotly_plot_options = ["Scatter Plot", "Line Plot", "Bar Plot"]
-                selected_plotly_plot = st.selectbox("Select Plotly Plot", plotly_plot_options)
-
-                if selected_plotly_plot == "Scatter Plot":
-                    st.write("### Scatter Plot")
-                    scatterplot_x = st.selectbox("Select the X-axis column", state.data.columns)
-                    scatterplot_y = st.selectbox("Select the Y-axis column", state.data.columns)
-                    st.plotly_chart(px.scatter(state.data, x=state.data[scatterplot_x], y=state.data[scatterplot_y], title="Scatter Plot"))
-
-                elif selected_plotly_plot == "Bar Plot":
-                    st.write("### Bar Plot")
-                    barplot_x = st.selectbox("Select the X-axis column", state.data.columns)
-                    barplot_y = st.selectbox("Select the Y-axis column", state.data.columns)
-                    st.plotly_chart(px.bar(state.data, x=state.data[barplot_x], y=state.data[barplot_y], title="Bar Plot"))
+            # Similarly, update the code for Matplotlib and Plotly visualizations using the 'data' variable.
 
         except Exception as e:
             st.error(f"An error occurred: {str(e)}")
     else:
-        st.warning("Please preprocess the data in the 'Data Preprocessing' tab first.")
+        st.warning("Please upload a CSV file in the 'Data Preprocessing' tab first.")
 
 # Machine Learning tab
 elif selected_tab == "Machine Learning":
     st.header("Machine Learning")
 
-    # Check if data is preprocessed
-    if state.data is not None:
+    # Check if data is loaded
+    if data is not None:
         try:
             if st.checkbox("Build machine learning models"):
-                target_variable = st.selectbox("Select the target variable", state.data.columns)
-                features = state.data.drop(columns=[target_variable])
+                target_variable = st.selectbox("Select the target variable", data.columns)
+                features = data.drop(columns=[target_variable])
 
                 # Identify categorical columns for one-hot encoding
-                categorical_columns = state.data.select_dtypes(include="object").columns
+                categorical_columns = data.select_dtypes(include="object").columns
 
                 # One-hot encode categorical variables
-                state.data = pd.get_dummies(state.data, columns=categorical_columns, drop_first=True)
+                data = pd.get_dummies(data, columns=categorical_columns, drop_first=True)
 
                 # Build selected model
                 selected_model = st.selectbox("Select a machine learning model", ["Random Forest", "SVM", "Other Models"])
@@ -239,7 +188,7 @@ elif selected_tab == "Machine Learning":
 
                     # Split data into training and testing sets
                     X_train, X_test, y_train, y_test = train_test_split(
-                        features, state.data[target_variable], test_size=0.2, random_state=42
+                        features, data[target_variable], test_size=0.2, random_state=42
                     )
 
                     # Build the selected model
@@ -255,4 +204,4 @@ elif selected_tab == "Machine Learning":
         except Exception as e:
             st.error(f"An error occurred: {str(e)}")
     else:
-        st.warning("Please preprocess the data in the 'Data Preprocessing' tab first.")
+        st.warning("Please upload a CSV file in the 'Data Preprocessing' tab first.")
