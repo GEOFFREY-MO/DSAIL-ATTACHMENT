@@ -8,11 +8,6 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.svm import SVC
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import accuracy_score
-from streamlit.server.Server import Server
-import streamlit.ReportThread as ReportThread
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.svm import SVC
-from sklearn.tree import DecisionTreeClassifier
 
 # Access the current report thread
 report_thread = st.report_thread()
@@ -22,18 +17,18 @@ class SessionState:
     def __init__(self, **kwargs):
         for key, val in kwargs.items():
             setattr(self, key, val)
-
+            
 # Create or get the session state
 def get_session_state(**kwargs):
     ctx = ReportThread.get_report_ctx()
     this_session = None
-    current_server = Server.get_current()
+    current_server = st.server.server.Server.get_current()
     if hasattr(current_server, '_session_states'):
         if ctx.session_id not in current_server._session_states:
             current_server._session_states[ctx.session_id] = SessionState(**kwargs)
         this_session = current_server._session_states[ctx.session_id]
     return this_session
-
+    
 # Set page title
 st.set_page_config(page_title="Data Analysis Web App", layout="wide")
 
