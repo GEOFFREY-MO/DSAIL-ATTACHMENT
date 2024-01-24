@@ -17,16 +17,16 @@ st.set_page_config(
     initial_sidebar_state="expanded",  # Adjust sidebar state as needed
 )
 
-# Set custom styles
+# Set custom styles with light blue and light green colors
 st.markdown(
     """
     <style>
     .big-font {
         font-size: 24px !important;
-        color: #FF5733 !important;  /* Change color to your preferred value */
+        color: #3498db !important;  /* Light blue color */
     }
     .highlight {
-        background-color: #F4F4F4;  /* Change background color to your preferred value */
+        background-color: #2ecc71 !important;  /* Light green color */
     }
     </style>
     """,
