@@ -110,7 +110,8 @@ elif selected_tab == "Data Preprocessing":
                         st.warning('No numerical columns selected for scaling.')
 
                 # Store preprocessed data in session state
-                state.data = data.copy()
+                session_state = get_session_state(data=None)
+                session_state.data = data.copy()
 
                 # Display the preprocessed data
                 st.subheader('Preprocessed Data')
@@ -124,8 +125,9 @@ elif selected_tab == "Explore and Visualize":
     st.header("Explore and Visualize Data")
 
     # Check if data is preprocessed
-    if state.data is not None:
-        data = state.data  # Use the preprocessed data for visualization
+    session_state = get_session_state()
+    if session_state.data is not None:
+        data = session_state.data  # Use the preprocessed data for visualization
 
         try:
             plot_options = ["Seaborn", "Matplotlib", "Plotly"]
@@ -221,8 +223,9 @@ elif selected_tab == "Machine Learning":
     st.header("Machine Learning")
 
     # Check if data is preprocessed
-    if state.data is not None:
-        data = state.data  # Use the preprocessed data for machine learning
+    session_state = get_session_state()
+    if session_state.data is not None:
+        data = session_state.data  # Use the preprocessed data for machine learning
 
         try:
             if st.checkbox("Build machine learning models"):
