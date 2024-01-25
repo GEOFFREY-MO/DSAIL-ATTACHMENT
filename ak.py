@@ -331,9 +331,9 @@ elif selected_tab == "Machine Learning":
                     # Define hyperparameters for grid search
                     param_grid = {
                         'C': [0.1, 1, 10, 100],
-                        'gamma': [1, 0.1, 0.01, 0.001],
-                        'kernel':  ['rbf', 'linear', 'poly', 'sigmoid']
+                        'gamma': [1, 0.1, 0.01, 0.001]
                     }
+
                     # Perform grid search
                     grid_search = GridSearchCV(estimator=model, param_grid=param_grid, cv=5, n_jobs=-1)
                     grid_search.fit(features, data[target_variable])
@@ -343,9 +343,10 @@ elif selected_tab == "Machine Learning":
                     best_score = grid_search.best_score_
                     st.write(f"Best parameters for SVM: {best_params}")
                     st.write(f"Best cross-validation score for SVM: {best_score}")
+
                     # Split data into training and testing sets
                     X_train, X_test, y_train, y_test = train_test_split(
-                        features, data[target_variable], test_size=0.2, random_state=42
+                    features, data[target_variable], test_size=0.2, random_state=42
                     )
 
                     # Build the selected model with best parameters
@@ -379,6 +380,7 @@ elif selected_tab == "Machine Learning":
                     plt.xlim([0.0, 1.0])
                     plt.ylim([0.0, 1.0])
                     plt.xlabel('False Positive Rate')
+                    
                     plt.ylabel('True Positive Rate')
                     plt.title('ROC Curve')
                     plt.legend(loc="lower right")
