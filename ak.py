@@ -3,13 +3,11 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 import plotly.express as px
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.svm import SVC
 from sklearn.metrics import accuracy_score, classification_report, roc_curve, auc
 
-# Set page title
-#st.set_page_config(page_title="Data Analysis Web App", layout="wide")
 # Set page title and configure layout
 st.set_page_config(
     page_title="Data Analysis Web App",
@@ -17,22 +15,22 @@ st.set_page_config(
     initial_sidebar_state="expanded",  # Adjust sidebar state as needed
 )
 
-# Set custom styles with light blue and light green colors
+# Set custom styles
 st.markdown(
     """
     <style>
     .big-font {
         font-size: 24px !important;
-        color: #3498db !important;  /* Light blue color */
+        color: #FF5733 !important;  /* Change color to your preferred value */
     }
     .highlight {
-        background-color: #2ecc71 !important;  /* Light green color */
+        background-color: #F4F4F4;  /* Change background color to your preferred value */
     }
     </style>
     """,
     unsafe_allow_html=True,
 )
-##
+
 # Sidebar with options
 st.sidebar.header("RESOURCE")
 show_raw_data = st.sidebar.checkbox("Show Raw Data")
@@ -43,36 +41,16 @@ if 'data' not in st.session_state:
     st.session_state.data = None
 
 # Main content area
-selected_tab = st.sidebar.radio("### Navigation", ["Home", "Data Preprocessing", "Explore and Visualize", "Machine Learning"])
+selected_tab = st.sidebar.radio("Navigation", ["Home", "Data Preprocessing", "Explore and Visualize", "Machine Learning"])
 
-# Home tab
 # Home tab
 if selected_tab == "Home":
     st.header("Welcome to the Data Analysis Web App")
-
-    st.write(
-        "This web app is designed for data analysis tasks. "
-        "You can upload a CSV file, preprocess the data, "
-        "explore and visualize it, and even build machine learning models."
-    )
-
-    st.subheader("Features:")
-    st.markdown("- **Data Preprocessing:** Clean and preprocess your dataset.")
-    st.markdown("- **Exploration and Visualization:** Explore your data using different visualization tools.")
-    st.markdown("- **Machine Learning:** Build and evaluate machine learning models.")
-
-    st.subheader("How to Use:")
-    st.markdown(
-        "1. Navigate through the tabs on the left sidebar to access different functionalities."
-    )
-    st.markdown("2. In the 'Data Preprocessing' tab, upload a CSV file to get started.")
-    st.markdown("3. Follow the instructions in each tab to perform specific tasks.")
-
-    st.subheader("Note:")
-    st.markdown(
-        "Make sure to preprocess the data before moving to the 'Explore and Visualize' "
-        "and 'Machine Learning' tabs for better results."
-    )
+    st.markdown("""
+    This web application allows you to perform various data analysis tasks such as data preprocessing, 
+    exploratory data analysis, visualization, and machine learning model building and evaluation.
+    Explore the different tabs on the sidebar to access the functionalities.
+    """)
 
 # Data Preprocessing tab
 elif selected_tab == "Data Preprocessing":
@@ -285,12 +263,30 @@ elif selected_tab == "Machine Learning":
                     model = RandomForestClassifier()
                     st.write("Random Forest model created.")
 
+                    # Define hyperparameters for grid search
+                    param_grid = {
+                        'n_estimators': [50, 100, 200],
+                        'max_depth': [None, 10, 20, 30],
+                        'min_samples_split': [2, 5, 10],
+                        'min_samples_leaf': [1, 2, 4]
+                    }
+
+                    # Perform grid search
+                    grid_search = GridSearchCV(estimator=model, param_grid=param_grid, cv=5, n_jobs=-1)
+                    grid_search.fit(features, data[target_variable])
+
+                    # Get the best parameters and best score
+                    best_params = grid_search.best_params_
+                    best_score = grid_search.best_score_
+                    st.write(f"Best parameters for Random Forest: {best_params}")
+                    st.write(f"Best cross-validation score for Random Forest: {best_score}")
                     # Split data into training and testing sets
                     X_train, X_test, y_train, y_test = train_test_split(
                         features, data[target_variable], test_size=0.2, random_state=42
                     )
 
-                    # Build the selected model
+                    # Build the selected model with best parameters
+                    model = SVC(**best_params)
                     model.fit(X_train, y_train)
 
                     # Make predictions on the test set
@@ -311,7 +307,7 @@ elif selected_tab == "Machine Learning":
 
                     # ROC Curve and AUC
                     st.subheader("Receiver Operating Characteristic (ROC) Curve")
-                    fpr, tpr, thresholds = roc_curve(y_test, model.predict_proba(X_test)[:, 1])
+                    fpr, tpr, thresholds = roc_curve(y_test, model.decision_function(X_test))
                     roc_auc = auc(fpr, tpr)
 
                     fig, ax = plt.subplots()
@@ -324,19 +320,36 @@ elif selected_tab == "Machine Learning":
                     plt.title('ROC Curve')
                     plt.legend(loc="lower right")
                     st.pyplot(fig)
+                    
 
-                # Add more models as needed
+            
+
                 elif selected_model == "SVM":
-                    # Support Vector Machine (SVM) model
-                    model = SVC()  # Import the required class, SVC (Support Vector Classification)
+                    model = SVC()
                     st.write("SVM model created.")
 
+                    # Define hyperparameters for grid search
+                    param_grid = {
+                        'C': [0.1, 1, 10, 100],
+                        'gamma': [1, 0.1, 0.01, 0.001],
+                        'kernel':  ['rbf', 'linear', 'poly', 'sigmoid']
+                    }
+                    # Perform grid search
+                    grid_search = GridSearchCV(estimator=model, param_grid=param_grid, cv=5, n_jobs=-1)
+                    grid_search.fit(features, data[target_variable])
+
+                    # Get the best parameters and best score
+                    best_params = grid_search.best_params_
+                    best_score = grid_search.best_score_
+                    st.write(f"Best parameters for SVM: {best_params}")
+                    st.write(f"Best cross-validation score for SVM: {best_score}")
                     # Split data into training and testing sets
                     X_train, X_test, y_train, y_test = train_test_split(
                         features, data[target_variable], test_size=0.2, random_state=42
                     )
 
-                    # Build the selected model
+                    # Build the selected model with best parameters
+                    model = SVC(**best_params)
                     model.fit(X_train, y_train)
 
                     # Make predictions on the test set
@@ -345,6 +358,7 @@ elif selected_tab == "Machine Learning":
                     # Evaluate the model
                     accuracy = accuracy_score(y_test, predictions)
                     st.write(f"Accuracy: {accuracy:.2f}")
+
                     # Display confusion matrix
                     st.subheader("Confusion Matrix")
                     st.write(pd.crosstab(y_test, predictions, rownames=['Actual'], colnames=['Predicted']))
@@ -356,7 +370,7 @@ elif selected_tab == "Machine Learning":
 
                     # ROC Curve and AUC
                     st.subheader("Receiver Operating Characteristic (ROC) Curve")
-                    fpr, tpr, thresholds = roc_curve(y_test, model.predict_proba(X_test)[:, 1])
+                    fpr, tpr, thresholds = roc_curve(y_test, model.decision_function(X_test))
                     roc_auc = auc(fpr, tpr)
 
                     fig, ax = plt.subplots()
@@ -369,13 +383,14 @@ elif selected_tab == "Machine Learning":
                     plt.title('ROC Curve')
                     plt.legend(loc="lower right")
                     st.pyplot(fig)
-
-                # Add more models as needed
-                elif selected_model == "Other Models":
-                    # Include code for other models
-                    pass
 
         except Exception as e:
             st.error(f"An error occurred: {str(e)}")
     else:
         st.warning("Please preprocess the data in the 'Data Preprocessing' tab first.")
+
+
+
+
+
+                    
