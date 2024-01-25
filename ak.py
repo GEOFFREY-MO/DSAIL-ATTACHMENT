@@ -239,6 +239,7 @@ elif selected_tab == "Explore and Visualize":
         st.warning("Please preprocess the data in the 'Data Preprocessing' tab first.")
 
 # Machine Learning tab
+# Machine Learning tab
 elif selected_tab == "Machine Learning":
     st.header("Machine Learning")
 
@@ -263,28 +264,12 @@ elif selected_tab == "Machine Learning":
                     model = RandomForestClassifier()
                     st.write("Random Forest model created.")
 
-                    # Define hyperparameters for grid search
-                    param_grid = {
-                        'C': [0.1, 1, 10, 100],
-                        'gamma': [1, 0.1, 0.01, 0.001]
-                    }
-
-                    # Perform grid search
-                    grid_search = GridSearchCV(estimator=model, param_grid=param_grid, cv=5, n_jobs=-1)
-                    grid_search.fit(features, data[target_variable])
-
-                    # Get the best parameters and best score
-                    best_params = grid_search.best_params_
-                    best_score = grid_search.best_score_
-                    st.write(f"Best parameters for Random Forest: {best_params}")
-                    st.write(f"Best cross-validation score for Random Forest: {best_score}")
                     # Split data into training and testing sets
                     X_train, X_test, y_train, y_test = train_test_split(
                         features, data[target_variable], test_size=0.2, random_state=42
                     )
 
-                    # Build the selected model with best parameters
-                    model = SVC(**best_params)
+                    # Fit the Random Forest model
                     model.fit(X_train, y_train)
 
                     # Make predictions on the test set
