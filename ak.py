@@ -288,7 +288,6 @@ elif selected_tab == "Machine Learning":
                     classification_report_str = classification_report(y_test, predictions)
                     st.text(classification_report_str)
 
-                    )
                     # Compute ROC Curve and AUC
                     st.subheader("Receiver Operating Characteristic (ROC) Curve")
                     y_probs = model.predict_proba(X_test)
@@ -306,6 +305,7 @@ elif selected_tab == "Machine Learning":
                     plt.title('ROC Curve')
                     plt.legend(loc="lower right")
                     st.pyplot(fig)
+                    
             
 
                 elif selected_model == "SVM":
