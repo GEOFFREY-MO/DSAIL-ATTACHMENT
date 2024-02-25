@@ -45,7 +45,7 @@ selected_tab = st.sidebar.radio("Navigation", ["Home", "Data Preprocessing", "Ex
 
 # Home tab
 if selected_tab == "Home":
-    st.header("Welcome to the Data Analysis Web App")
+    st.header("Welcome to Fredrick Data analysis App")
     st.markdown("""
     This web application allows you to perform various data analysis tasks such as data preprocessing, 
     exploratory data analysis, visualization, and machine learning model building and evaluation.
