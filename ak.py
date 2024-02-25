@@ -10,7 +10,7 @@ from sklearn.metrics import accuracy_score, classification_report, roc_curve, au
 
 # Set page title and configure layout
 st.set_page_config(
-    page_title="Data Analysis Web App",
+    page_title="Fredrick Data APP",
     layout="wide",
     initial_sidebar_state="expanded",  # Adjust sidebar state as needed
 )
