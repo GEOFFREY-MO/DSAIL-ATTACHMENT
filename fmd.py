@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 from tensorflow.keras.models import load_model
 import json
-from google.colab.patches import cv2_imshow
+import streamlit as st
 
 # Load the trained model
 model = load_model("/content/fmd_detection_model")
@@ -74,7 +74,7 @@ if label == "fmd":
     cv2.putText(image, "FMD detected", (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
 
     # Display the image with the bounding box
-    cv2_imshow(image)
+    st.image(image, caption='FMD detected', use_column_width=True)
 else:
     # Display the original image if the label is not "fmd"
-    cv2_imshow(image)
+    st.image(image, caption='Original Image', use_column_width=True)
