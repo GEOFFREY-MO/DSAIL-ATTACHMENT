@@ -5,3 +5,7 @@ streamlit
 matplotlib
 pandas-profiling
 plotly
+opencv-python-headless
+tensorflow
+Pillow
+requests
