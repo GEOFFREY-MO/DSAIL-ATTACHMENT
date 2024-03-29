@@ -1,40 +1,50 @@
 import cv2
 import numpy as np
-import streamlit as st
 from tensorflow.keras.models import load_model
 import json
+import streamlit as st
+from PIL import Image
+import os
+import zipfile
+
+# Function to load the model
+def load_detection_model():
+    # Check if the model directory exists
+    model_dir = "model"
+    if not os.path.exists(model_dir):
+        # Download the model file from GitHub
+        os.system("wget https://github.com/GEOFFREY-MO/DSAIL-ATTACHMENT/raw/main/fmd_detection_model.zip")
+        # Extract the model file
+        with zipfile.ZipFile("fmd_detection_model.zip", "r") as zip_ref:
+            zip_ref.extractall(model_dir)
+    # Load the model
+    return load_model(os.path.join(model_dir, "fmd_detection_model"))
+
+# Load the trained model
+model = load_detection_model()
 
 # Function to preprocess the image
 def preprocess_image(image, target_size=(224, 224)):
+    image = cv2.cvtColor(np.array(image), cv2.COLOR_RGB2BGR)
     image = cv2.resize(image, target_size)
     image = np.expand_dims(image, axis=0)  # Add batch dimension
     image = image / 255.0  # Normalize pixel values
     return image
 
-# Load the trained model
-@st.cache(allow_output_mutation=True)
-def load_detection_model():
-    return load_model("fmd_detection_model")
-
-model = load_detection_model()
-
 # Load the annotations from the JSON file
 with open('fmd.json', 'r') as f:
     annotations = json.load(f)
 
-# Title of the app
+# Streamlit app
 st.title("FMD Detection App")
 
-# File uploader for image selection
-uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg"])
+# Upload image or capture from camera
+uploaded_file = st.file_uploader("Upload Image or Capture from Camera", type=["jpg", "jpeg", "png"])
 
-# Check if an image is uploaded
+# Process uploaded image or camera capture
 if uploaded_file is not None:
-    # Read the uploaded image
-    file_bytes = np.asarray(bytearray(uploaded_file.read()), dtype=np.uint8)
-    image = cv2.imdecode(file_bytes, 1)
-
-    # Preprocess the image
+    image = Image.open(uploaded_file)
+    st.image(image, caption='Uploaded Image', use_column_width=True)
     processed_image = preprocess_image(image)
 
     # Make predictions
@@ -56,12 +66,11 @@ if uploaded_file is not None:
         else:
             label = "No FMD"
 
-    # Display the prediction label
-    st.subheader("Prediction:")
-    st.write(label)
+    # Display prediction label
+    st.write(f"Prediction: {label}")
 
     # Get the image size
-    image_height, image_width, _ = image.shape
+    image_height, image_width, _ = processed_image.shape
 
     # Draw the bounding box only if the label is "FMD"
     if label == "FMD":
@@ -80,12 +89,13 @@ if uploaded_file is not None:
             h = int(image_height * 0.75)  # 3/4 of the height
 
         # Draw the bounding box
-        cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
+        cv2.rectangle(processed_image[0], (x, y), (x + w, y + h), (0, 255, 0), 2)
+
+        # Label the bounding box
+        cv2.putText(processed_image[0], "FMD Detected", (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
 
         # Display the image with the bounding box
-        st.subheader("FMD Detected Image:")
-        st.image(image, channels="BGR")
+        st.image(processed_image[0], caption='FMD Detected', use_column_width=True)
     else:
         # Display the original image if the label is not "FMD"
-        st.subheader("Original Image:")
-        st.image(image, channels="BGR")
+        st.image(processed_image[0], caption='Original Image', use_column_width=True)
