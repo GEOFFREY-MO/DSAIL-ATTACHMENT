@@ -10,19 +10,19 @@ import streamlit as st
 @st.cache(allow_output_mutation=True)
 def load_detection_model(model_dir="./"):
     # Define the URL of the model zip file on GitHub
-    model_url = "https://github.com/GEOFFREY-MO/DSAIL-ATTACHMENT/raw/main/fmd_detection_model.zip"
+    model_url = "fmd_detection_model (1).zip"
     
     # Download the model zip file
     r = requests.get(model_url)
-    with open("fmd_detection_model.zip", "wb") as f:
+    with open("fmd_detection_model.zip (1)", "wb") as f:
         f.write(r.content)
     
     # Extract the model zip file
-    with zipfile.ZipFile("fmd_detection_model.zip", 'r') as zip_ref:
+    with zipfile.ZipFile("fmd_detection_model.zip (1)", 'r') as zip_ref:
         zip_ref.extractall(model_dir)
     
     # Load the model
-    model_path = os.path.join(model_dir, "fmd_detection_model")
+    model_path = os.path.join(model_dir, "fmd_detection_mode (l)")
     return load_model(model_path)
 
 # Load the trained model
