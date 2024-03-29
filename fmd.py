@@ -13,7 +13,7 @@ def load_detection_model():
     model_dir = "model"
     if not os.path.exists(model_dir):
         # Download the model file from GitHub
-        os.system("wget https://github.com/GEOFFREY-MO/DSAIL-ATTACHMENT/raw/main/fmd_detection_model.zip")
+        os.system("wget https://github.com/GEOFFREY-MO/DSAIL-ATTACHMENT/blob/main/fmd_detection_model.zip")
         # Extract the model file
         with zipfile.ZipFile("fmd_detection_model.zip", "r") as zip_ref:
             zip_ref.extractall(model_dir)
