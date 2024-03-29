@@ -9,15 +9,15 @@ import tensorflow as tf
 # Function to load the detection model
 def load_detection_model(model_dir="./"):
     # Define the URL of the model zip file on GitHub
-    model_url = "https://github.com/GEOFFREY-MO/DSAIL-ATTACHMENT/blob/3c7766fdf9a08cef1ee47cd46b038d506a23a172/fmd_detection_model.zip"
+    model_url = "https://github.com/GEOFFREY-MO/DSAIL-ATTACHMENT/blob/3c7766fdf9a08cef1ee47cd46b038d506a23a172/fmd_detection_model.rar"
     
     # Download the model zip file
     r = requests.get(model_url)
-    with open("fmd_detection_model.zip", "wb") as f:
+    with open("fmd_detection_model.rar", "wb") as f:
         f.write(r.content)
     
     # Extract the model zip file
-    with zipfile.ZipFile("fmd_detection_model.zip", 'r') as zip_ref:
+    with zipfile.ZipFile("fmd_detection_model.rar", 'r') as zip_ref:
         zip_ref.extractall(model_dir)
     
     # Load the model
