@@ -10,7 +10,7 @@ import streamlit as st
 @st.cache(allow_output_mutation=True)
 def load_detection_model(model_dir="./"):
     # Define the URL of the model zip file on GitHub
-    model_url = "fmd_detection_model (1).zip"
+    model_url = "https://github.com/GEOFFREY-MO/DSAIL-ATTACHMENT/blob/6498595ee39945135e80d1db02d5858eb1e2e733/fmd_detection_model%20(1).zip"
     
     # Download the model zip file
     r = requests.get(model_url)
