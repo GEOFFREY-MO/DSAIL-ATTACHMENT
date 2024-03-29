@@ -9,3 +9,5 @@ opencv-python-headless
 tensorflow
 Pillow
 requests
+zipfile
+os
