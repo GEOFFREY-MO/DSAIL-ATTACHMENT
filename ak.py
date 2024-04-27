@@ -10,7 +10,7 @@ from sklearn.metrics import accuracy_score, classification_report, roc_curve, au
 
 # Set page title and configure layout
 st.set_page_config(
-    page_title="Fredrick Data APP",
+    page_title="Auto Data Analysis APP",
     layout="wide",
     initial_sidebar_state="expanded",  # Adjust sidebar state as needed
 )
@@ -45,7 +45,7 @@ selected_tab = st.sidebar.radio("Navigation", ["Home", "Data Preprocessing", "Ex
 
 # Home tab
 if selected_tab == "Home":
-    st.header("Welcome to Fredrick Data analysis App")
+    st.header("Welcome to Auto Data analysis App")
     st.markdown("""
     This web application allows you to perform various data analysis tasks such as data preprocessing, 
     exploratory data analysis, visualization, and machine learning model building and evaluation.
@@ -374,9 +374,3 @@ elif selected_tab == "Machine Learning":
             st.error(f"An error occurred: {str(e)}")
     else:
         st.warning("Please preprocess the data in the 'Data Preprocessing' tab first.")
-
-
-
-
-
-                    
